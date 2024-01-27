@@ -1,8 +1,14 @@
 <!DOCTYPE html>
+{! Tasks:Name,Amount,Value Measured !}
+{! Products:Name,Amount,Value Measured !}
 <html>
 	<head>
 		<meta charset="utf-8" />
-		<title>A simple, clean, and responsive HTML invoice template</title>
+		<title>Mikhael Aubut × Développeur Web × Créatif</title>
+
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 
 		<style>
 			.invoice-box {
@@ -11,10 +17,10 @@
 				padding: 30px;
 				border: 1px solid #eee;
 				box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
-				font-size: 16px;
+				font-size: 14px;
 				line-height: 24px;
-				font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
-				color: #555;
+				font-family: "Inter", sans-serif;
+				color: #000;
 			}
 
 			.invoice-box table {
@@ -23,7 +29,7 @@
 				text-align: left;
 			}
 
-			.invoice-box table td {
+			.invoice-box table td:not([colspan="3"]), .invoice-box table th:not([colspan="3"]) {
 				padding: 5px;
 				vertical-align: top;
 			}
@@ -32,24 +38,51 @@
 				text-align: right;
 			}
 
+			.invoice-box table tr.notes table td {
+				font-size: 11px;
+				line-height: 14px;
+				color: #6b7280;
+			}
+
+			.invoice-box table tr.notes td[colspan="3"] {
+				padding-top: 45px;
+				padding-bottom: 45px;
+			}
+
 			.invoice-box table tr.top table td {
-				padding-bottom: 20px;
+				font-size: 14px;
+				line-height: 21px;
 			}
 
 			.invoice-box table tr.top table td.title {
-				font-size: 45px;
-				line-height: 45px;
-				color: #333;
+				font-size: 18px;
+				font-weight: bold;
+				line-height: 14px;
+				padding-bottom: 24px;
+			}
+
+			.invoice-box table tr.top td[colspan="3"] {
+				padding-top: 45px;
+				padding-bottom: 45px;
+
 			}
 
 			.invoice-box table tr.information table td {
 				padding-bottom: 40px;
 			}
 
-			.invoice-box table tr.heading td {
-				background: #eee;
+			.invoice-box table tr.heading th {
 				border-bottom: 1px solid #ddd;
 				font-weight: bold;
+				text-transform: uppercase;
+				color: #6b7280;
+				font-size: 11px;
+				line-height: 14px;
+			}
+
+			.invoice-box table tr.heading th:not(:first-child) {
+				text-align: right;
+
 			}
 
 			.invoice-box table tr.details td {
@@ -60,13 +93,22 @@
 				border-bottom: 1px solid #eee;
 			}
 
-			.invoice-box table tr.item.last td {
-				border-bottom: none;
+			.invoice-box table tr.item td:not(:first-child) {
+				text-align: right;
 			}
 
-			.invoice-box table tr.total td:nth-child(2) {
-				border-top: 2px solid #eee;
+			.invoice-box table tr.total td[colspan="3"] {
+				padding-top: 20px;
+				font-size: 18px;
 				font-weight: bold;
+			}
+
+			.invoice-box table tr.total td table td {
+				padding-top: 0px;
+			}
+
+			.handle {
+				color: #6b7280;
 			}
 
 			@media only screen and (max-width: 600px) {
@@ -96,53 +138,68 @@
 			.invoice-box.rtl table tr td:nth-child(2) {
 				text-align: left;
 			}
+
+			@media print {
+				/* body {transform: scale(.9);} */
+				@page {
+					size: letter;
+				}
+				
+				.invoice-box {
+					max-width: unset;
+					box-shadow: none;
+					border: 0px;
+				}
+			}
 		</style>
 	</head>
 
 	<body>
 		<div class="invoice-box">
 			<table cellpadding="0" cellspacing="0">
+				<tr class="logo">
+					<td colspan="3">
+						<table>
+							<tr>
+								<td colspan="3">
+									<img src="https://mikhaelaubut.com/ciblenet-tag.svg" width="120" height="auto" />
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+
 				<tr class="top">
-					<td colspan="2">
+					<td colspan="3">
 						<table>
 							<tr>
 								<td class="title">
-									<img
-										src="https://sparksuite.github.io/simple-html-invoice-template/images/logo.png"
-										style="width: 100%; max-width: 300px"
-									/>
+									{{Client.Name}}
+									
 								</td>
-
-								<td>
-									Invoice #: 123<br />
-									Created: January 1, 2023<br />
-									Due: February 1, 2023
-								</td>
+								<td rowspan="3" style="vertical-align: bottom;">
+									<b>Ciblenet</b><br />
+									2402, croissant d'Auteuil<br />
+									Mascouche, QC J7K 3K8<br />
+									info@ciblenet.com </td>
 							</tr>
-						</table>
-					</td>
-				</tr>
-
-				<tr class="information">
-					<td colspan="2">
-						<table>
 							<tr>
 								<td>
-									Sparksuite, Inc.<br />
-									12345 Sunny Road<br />
-									Sunnyville, CA 12345
-								</td>
-
-								<td>
-									Acme Corp.<br />
-									John Doe<br />
-									john@example.com
+									<%
+										let date = new Date();
+										let monthNames = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"];
+										let formattedDate = date.getDate() + ' ' + monthNames[date.getMonth()] + ', ' + date.getFullYear();
+									%>
+									Date: <b><%= formattedDate %></b><br />
+									Facture: <b>#{{Name}}</b>
 								</td>
 							</tr>
 						</table>
 					</td>
 				</tr>
 
+				
+<!-- 
 				<tr class="heading">
 					<td>Payment Method</td>
 
@@ -153,37 +210,104 @@
 					<td>Check</td>
 
 					<td>1000</td>
-				</tr>
+				</tr> -->
 
 				<tr class="heading">
-					<td>Item</td>
-
-					<td>Price</td>
+					<th>Item</th>
+					<th>Qté</th>
+					<th>Prix</th>
 				</tr>
 
+				<% 
+					let total = 0;
+					for(let task of Entity.Tasks) {
+					let amount = Number(task.Amount);
+					let formattedAmount = amount.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' });
+					total = total + amount;
+				%>
 				<tr class="item">
-					<td>Website design</td>
-
-					<td>$300.00</td>
+					<td><%= task.Name %></td>
+					<td><%= task['Value Measured'] && task['Value Measured'] != 0 ? task['Value Measured'] : '1' %></td>
+					<td><%= formattedAmount %></td>
 				</tr>
+				<%}%>
 
+				<% 
+					for(let product of Entity.Products) {
+						let amount = Number(product.Amount);
+						let formattedAmount = amount.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' });
+						total = total + amount;
+				%>
 				<tr class="item">
-					<td>Hosting (3 months)</td>
-
-					<td>$75.00</td>
+					<td><%= product.Name %></td>
+					<td><%= product['Value Measured'] && product['Value Measured'] != 0 ? product['Value Measured'] : '1' %></td>
+					<td><%= formattedAmount %></td>
 				</tr>
-
-				<tr class="item last">
-					<td>Domain name (1 year)</td>
-
-					<td>$10.00</td>
-				</tr>
+				<%}%>
 
 				<tr class="total">
-					<td></td>
 
-					<td>Total: $385.00</td>
+				
+					<td colspan="3">
+						<table>
+							<tr class="heading">
+								<th>À payer avant</th>
+								<th>Total</th>
+							</tr>
+
+							<tr>
+								<td>
+									<%
+										let dueDate = new Date(Entity['Due Date']);
+										let formattedDueDate = dueDate.getDate() + ' ' + monthNames[dueDate.getMonth()] + ', ' + dueDate.getFullYear();
+									%>
+									
+									<span style="display: none;"> {{Due Date}}</span> <%= formattedDueDate %></td>
+								<td>
+									<%
+										let formattedTotal = total.toLocaleString('fr-CA', { style: 'currency', currency: 'CAD' });
+									%>
+
+									<%= formattedTotal %>
+									</td>
+							</tr>
+						</table>
+					</td>
+
 				</tr>
+
+				<tr class="notes">
+					<td colspan="3">
+						<table>
+							<tr>
+								<td>
+									<p>AVIS: Le paiement doit être effectué dans les 30 jours suivant la date de facturation mentionnée. Un paiement minimal de 50% du montant total est exigé pour le lancement de tout projet confondu. Tout retard de paiement est soumis à une redevance de 5% par mois.</p>
+
+									<p>PAIEMENT: J'accepte les paiements par chèque (libellé à Ciblenet), PayPal , argent comptant ou par le biais d'un virement bancaire. Veuillez poster votre paiement à l'adresse : 2402, Croissant d'Auteuil Mascouche, QC J7K ou le courriel info@ciblenet.com.</p>
+								
+									<p>QUESTIONS: Si vous avez des questions concernant votre facture, n’hésitez pas à me contacter : info@ciblenet.com.</p>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+
+				<tfoot>
+					<tr>
+						<td colspan="3">
+							<table>
+								<tr>
+									<td>
+										info@ciblenet.com <span class="handle">×</span> 514 292-4487 <span class="handle">×</span> ciblenet.com
+									</td>
+									<td>
+										<br />
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</tfoot>
 			</table>
 		</div>
 	</body>
